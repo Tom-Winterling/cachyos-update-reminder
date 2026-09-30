@@ -34,8 +34,14 @@ class UpdateReminderWindow(QWidget):
         self.resize(650, 400)
 
         self.title_label = QLabel("CachyOS Update Reminder")
+        self.title_label.setStyleSheet(
+            "font-size: 20px; font-weight: bold;"
+        )
 
         self.update_label = QLabel("Prüfe auf Updates...")
+        self.update_label.setStyleSheet(
+            "font-size: 14px;"
+        )       
 
         self.update_table = QTableWidget()
         self.update_table.setColumnCount(3)
@@ -50,8 +56,10 @@ class UpdateReminderWindow(QWidget):
         self.update_table.setSelectionBehavior(
             QTableWidget.SelectionBehavior.SelectRows
         )
+        self.update_table.horizontalHeader().setStretchLastSection(True)
 
         self.check_button = QPushButton("Jetzt prüfen")
+        self.check_button.setMinimumHeight(36)
         self.check_button.clicked.connect(self.check_for_updates)
 
         layout = QVBoxLayout()
