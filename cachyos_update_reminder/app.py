@@ -87,9 +87,12 @@ class UpdateReminderWindow(QWidget):
     def update_results(self, updates):
         count = len(updates)
 
-        self.update_label.setText(
-            f"{count} Updates verfügbar"
-        )
+        if count == 0:
+            self.update_label.setText("Keine Updates verfügbar")
+        else:
+            self.update_label.setText(
+                f"{count} Updates verfügbar"
+            )
 
         self.update_table.setRowCount(0)
 
