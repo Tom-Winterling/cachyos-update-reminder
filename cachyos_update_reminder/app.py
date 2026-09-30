@@ -178,6 +178,18 @@ class UpdateReminderWindow(QWidget):
 def main():
     app = QApplication(sys.argv)
 
+    autostart = "--autostart" in sys.argv
+
+    if autostart:
+        try:
+            updates = check_updates()
+
+            if not updates:
+                sys.exit(0)
+
+        except Exception:
+            sys.exit(1)
+
     window = UpdateReminderWindow()
     window.show()
 
