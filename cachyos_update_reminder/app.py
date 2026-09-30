@@ -170,9 +170,17 @@ class UpdateReminderWindow(QWidget):
     def show_error(self, error):
         self.update_label.setText(
             f"Fehler beim Prüfen:\n{error}"
-        )
+    )
 
         self.update_table.setRowCount(0)
+
+
+def should_show_autostart_reminder():
+    try:
+        updates = check_updates()
+        return bool(updates)
+    except Exception:
+        return False
 
 
 def main():
@@ -180,15 +188,8 @@ def main():
 
     autostart = "--autostart" in sys.argv
 
-    if autostart:
-        try:
-            updates = check_updates()
-
-            if not updates:
-                sys.exit(0)
-
-        except Exception:
-            sys.exit(1)
+    if autostart and not should_show_autostart_reminder():
+        sys.exit(0)
 
     window = UpdateReminderWindow()
     window.show()
