@@ -31,7 +31,7 @@ class UpdateReminderWindow(QWidget):
         super().__init__()
 
         self.setWindowTitle("CachyOS Update Reminder")
-        self.resize(650, 400)
+        self.resize(600, 350)
 
         self.title_label = QLabel("CachyOS Update Reminder")
         self.title_label.setStyleSheet(
@@ -40,8 +40,14 @@ class UpdateReminderWindow(QWidget):
 
         self.update_label = QLabel("Prüfe auf Updates...")
         self.update_label.setStyleSheet(
-            "font-size: 14px;"
-        )       
+            """
+            QLabel {
+                font-size: 14px;
+                font-weight: bold;
+                padding: 6px;
+            }
+            """
+        )     
 
         self.update_table = QTableWidget()
         self.update_table.setColumnCount(3)
@@ -63,18 +69,49 @@ class UpdateReminderWindow(QWidget):
         self.check_button.clicked.connect(self.check_for_updates)
 
         layout = QVBoxLayout()
+        layout.setContentsMargins(16, 16, 16, 16)
+        layout.setSpacing(10)
         layout.addWidget(self.title_label)
         layout.addWidget(self.update_label)
         layout.addWidget(self.update_table)
         layout.addWidget(self.check_button)
 
         self.setLayout(layout)
+        self.setStyleSheet(
+            """
+            QWidget {
+                font-size: 14px;
+            }
+
+            QLabel {
+                padding: 4px;
+            }
+
+            QTableWidget {
+                border: 1px solid palette(mid);
+                border-radius: 6px;
+                gridline-color: palette(mid);
+            }
+
+            QHeaderView::section {
+                padding: 6px;
+                font-weight: bold;
+            }
+
+            QPushButton {
+                padding: 8px 16px;
+                border-radius: 6px;
+            }
+            """
+        )
 
         self.check_for_updates()
 
     def check_for_updates(self):
         self.check_button.setEnabled(False)
-        self.update_label.setText("Prüfe auf Updates...")
+        self.check_button.setText("Prüfe...")
+        self.update_label.setText("⟳ Prüfe auf Updates...")
+        
 
         self.checker_thread = UpdateCheckerThread()
 
@@ -87,7 +124,10 @@ class UpdateReminderWindow(QWidget):
         )
 
         self.checker_thread.finished.connect(
-            lambda: self.check_button.setEnabled(True)
+            lambda: (
+                self.check_button.setEnabled(True),
+                self.check_button.setText("Jetzt prüfen"),
+            )
         )
 
         self.checker_thread.start()
@@ -96,11 +136,11 @@ class UpdateReminderWindow(QWidget):
         count = len(updates)
 
         if count == 0:
-            self.update_label.setText("Keine Updates verfügbar")
+            self.update_label.setText("✓ Keine Updates verfügbar")
         else:
             self.update_label.setText(
-                f"{count} Updates verfügbar"
-            )
+                f"● {count} Updates verfügbar"
+        )
 
         self.update_table.setRowCount(0)
 
